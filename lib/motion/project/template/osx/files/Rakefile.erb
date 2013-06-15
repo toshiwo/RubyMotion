@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 $:.unshift("/Library/RubyMotion/lib")
 require 'motion/project/template/osx'
+<%= "Bundler.require if defined?(Bundler)" unless skip_gemfile %>
 
 Motion::Project::App.setup do |app|
   # Use `rake config' to see complete project settings.

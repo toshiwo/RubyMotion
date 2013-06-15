@@ -26,7 +26,7 @@ require 'erb'
 module Motion; module Project
   class Template
     # for ERB
-    attr_reader :name
+    attr_reader :name, :skip_gemfile
 
     Paths = [
       File.expand_path(File.join(__FILE__, '../template')),
@@ -45,9 +45,10 @@ module Motion; module Project
 
     Templates = Paths.map { |path| Dir.glob(path + '/*') }.flatten.select { |x| !x.match(/^\./) and File.directory?(x) }.map { |x| File.basename(x) }
 
-    def initialize(app_name, template_name)
+    def initialize(app_name, template_name, options = {})
       @name = @app_name = app_name
       @template_name = template_name.to_s
+      @skip_gemfile = options[:skip_gemfile] || false
       repository = Repository.new(@template_name)
 
       if repository.exist?
@@ -103,6 +104,10 @@ module Motion; module Project
         dest = src.sub("#{template_files}/", '')
         next if File.directory?(src)
         next if dest.include?(".DS_Store")
+        if dest.include?("Gemfile") and @skip_gemfile
+          App.log 'Skip', 'Gemfile'
+          next
+        end
 
         dest = replace_file_name(dest)
         if dest =~ /(.+)\.erb$/

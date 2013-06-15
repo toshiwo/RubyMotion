@@ -84,8 +84,8 @@ module Motion; module Project
         builder.codesign(config, platform)
       end
 
-      def create(app_name, template_name=:ios)
-        Motion::Project::Template.new(app_name, template_name).generate
+      def create(app_name, template_name=:ios, options = {})
+        Motion::Project::Template.new(app_name, template_name, options).generate
       end
 
       def log(what, msg)

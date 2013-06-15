@@ -34,6 +34,8 @@ module Motion; module Project
     def run(args)
       app_name = nil
       template_name = DefaultTemplate
+      skip_gemfile = false
+
       args.each do |a|
         case a
           when /--([^=]+)=(.+)/
@@ -45,6 +47,8 @@ module Motion; module Project
               else
                 die "Incorrect option `#{opt_name}'"
             end
+          when '--skip-gemfile'
+            skip_gemfile = true
           else
             if app_name
               app_name = nil
@@ -60,8 +64,11 @@ module Motion; module Project
         $stderr.puts "Available templates: " + Motion::Project::Template.all_templates.keys.map { |x| x == DefaultTemplate ? "#{x} (default)" : x }.join(', ')
         exit 1
       end
-  
-      Motion::Project::App.create(app_name, template_name)
+
+      options = {
+        :skip_gemfile => skip_gemfile,
+      }
+      Motion::Project::App.create(app_name, template_name, options)
     end
   end
 end; end
